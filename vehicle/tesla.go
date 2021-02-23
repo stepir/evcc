@@ -59,36 +59,38 @@ func NewTeslaFromConfig(other map[string]interface{}) (api.Vehicle, error) {
 		embed: &embed{cc.Title, cc.Capacity},
 	}
 
-	log := util.NewLogger("tesla")
-	authClient, err := auth.NewClient(log)
+	// logging http client and context
+	client := request.NewHelper(util.NewLogger("tesla")).Client
+	ctx := context.WithValue(context.Background(), oauth2.HTTPClient, client)
+
+	// tesla authentication
+	identity, err := auth.NewIdentity(client)
 	if err != nil {
 		return nil, err
 	}
 
-	token, err := teslaToken(authClient, cc.User, cc.Password, cc.Tokens)
+	token, err := teslaToken(ctx, identity, cc.User, cc.Password, cc.Tokens)
 	if err != nil {
 		return nil, fmt.Errorf("login failed: %w", err)
 	}
 
-	// authenticated http client with logging
-	ctx := context.WithValue(context.Background(), oauth2.HTTPClient, request.NewHelper(log).Client)
-	http := authClient.Config.Client(ctx, token)
+	// tesla API with authenticated and logging http client
+	teslaAPI := &tesla.Client{
+		BaseURL: tesla.BaseURL,
+		HTTP:    identity.Config.Client(ctx, token),
+	}
 
-	// injected to the Tesla client
-	client := &tesla.Client{HTTP: http}
-	tesla.ActiveClient = client
-
-	vehicles, err := client.Vehicles()
+	vehicles, err := teslaAPI.Vehicles()
 	if err != nil {
 		return nil, err
 	}
 
 	if cc.VIN == "" && len(vehicles) == 1 {
-		v.vehicle = vehicles[0].Vehicle
+		v.vehicle = vehicles[0]
 	} else {
 		for _, vehicle := range vehicles {
 			if vehicle.Vin == strings.ToUpper(cc.VIN) {
-				v.vehicle = vehicle.Vehicle
+				v.vehicle = vehicle
 			}
 		}
 	}
@@ -104,7 +106,7 @@ func NewTeslaFromConfig(other map[string]interface{}) (api.Vehicle, error) {
 }
 
 // teslaToken creates the Tesla OAuth token from given credentials
-func teslaToken(auth *auth.Client, user, password string, tokens teslaTokens) (*oauth2.Token, error) {
+func teslaToken(ctx context.Context, auth *auth.Identity, user, password string, tokens teslaTokens) (*oauth2.Token, error) {
 	// without tokens try to login - will fail if MFA enabled
 	if tokens.Access == "" {
 		token, err := auth.Login(user, password)
@@ -116,7 +118,6 @@ func teslaToken(auth *auth.Client, user, password string, tokens teslaTokens) (*
 	}
 
 	// create tokensource with given tokens
-	ctx := context.Background()
 	ts := auth.Config.TokenSource(ctx, &oauth2.Token{
 		AccessToken:  tokens.Access,
 		RefreshToken: tokens.Refresh,

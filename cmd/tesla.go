@@ -10,6 +10,7 @@ import (
 
 	"github.com/andig/evcc/server"
 	"github.com/andig/evcc/util"
+	"github.com/andig/evcc/util/request"
 	auth "github.com/andig/evcc/vehicle/tesla"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -44,7 +45,7 @@ func codePrompt(ctx context.Context, devices []tesla.Device) (tesla.Device, stri
 }
 
 func generateToken(user, pass string) {
-	client, err := auth.NewClient(log)
+	client, err := auth.NewIdentity(request.NewHelper(log).Client)
 	if err != nil {
 		log.FATAL.Fatalln(err)
 	}

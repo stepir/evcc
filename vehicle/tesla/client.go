@@ -8,15 +8,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 
-	"github.com/andig/evcc/util"
-	"github.com/andig/evcc/util/request"
 	"github.com/uhthomas/tesla"
 	"golang.org/x/oauth2"
 )
 
-// Client is the tesla authentication client
-type Client struct {
+// Identity is the tesla authentication client
+type Identity struct {
 	Config   *oauth2.Config
 	auth     *tesla.Auth
 	verifier string
@@ -43,8 +42,8 @@ func pkce() (verifier, challenge string, err error) {
 	return verifier, challenge, nil
 }
 
-// NewClient creates a tesla authentication client
-func NewClient(log *util.Logger) (*Client, error) {
+// NewIdentity creates a tesla authentication client
+func NewIdentity(client *http.Client) (*Identity, error) {
 	config := &oauth2.Config{
 		ClientID:     "ownerapi",
 		ClientSecret: "",
@@ -62,25 +61,25 @@ func NewClient(log *util.Logger) (*Client, error) {
 	}
 
 	auth := &tesla.Auth{
-		Client: request.NewHelper(log).Client,
+		Client: client,
 		AuthURL: config.AuthCodeURL(state(), oauth2.AccessTypeOffline,
 			oauth2.SetAuthURLParam("code_challenge", challenge),
 			oauth2.SetAuthURLParam("code_challenge_method", "S256"),
 		),
 	}
 
-	client := &Client{
+	c := &Identity{
 		Config:   config,
 		auth:     auth,
 		verifier: verifier,
 	}
-	client.DeviceHandler(client.mfaUnsupported)
+	c.DeviceHandler(c.mfaUnsupported)
 
-	return client, nil
+	return c, nil
 }
 
 // Login executes the MFA or non-MFA login
-func (c *Client) Login(username, password string) (*oauth2.Token, error) {
+func (c *Identity) Login(username, password string) (*oauth2.Token, error) {
 	ctx := context.Background()
 	code, err := c.auth.Do(ctx, username, password)
 	if err != nil {
@@ -95,10 +94,10 @@ func (c *Client) Login(username, password string) (*oauth2.Token, error) {
 }
 
 // DeviceHandler sets an alternative authentication device handler
-func (c *Client) DeviceHandler(handler func(context.Context, []tesla.Device) (tesla.Device, string, error)) {
+func (c *Identity) DeviceHandler(handler func(context.Context, []tesla.Device) (tesla.Device, string, error)) {
 	c.auth.SelectDevice = handler
 }
 
-func (c *Client) mfaUnsupported(_ context.Context, _ []tesla.Device) (tesla.Device, string, error) {
+func (c *Identity) mfaUnsupported(_ context.Context, _ []tesla.Device) (tesla.Device, string, error) {
 	return tesla.Device{}, "", errors.New("multi factor authentication is not supported")
 }
