@@ -203,6 +203,11 @@ func (c *Easee) Enable(enable bool) error {
 
 // MaxCurrent implements the Charger.MaxCurrent interface
 func (c *Easee) MaxCurrent(current int64) error {
+	return c.MaxCurrentMillis(float64(current))
+}
+
+// MaxCurrentMillis implements the Charger.MaxCurrentMillis interface
+func (c *Easee) MaxCurrentMillis(current float64) error {
 	cur := int(current)
 	data := easee.CircuitSettings{
 		DynamicCircuitCurrentP1: &cur,
