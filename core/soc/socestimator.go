@@ -15,7 +15,7 @@ const chargeEfficiency = 0.9 // assume charge 90% efficiency
 // Vehicle SoC can be estimated to provide more granularity
 type Estimator struct {
 	log      *util.Logger
-	vehicle  api.Vehicle
+	vehicle  api.Battery
 	estimate bool
 
 	capacity          float64 // vehicle capacity in Wh cached to simplify testing
@@ -27,23 +27,23 @@ type Estimator struct {
 }
 
 // NewEstimator creates new estimator
-func NewEstimator(log *util.Logger, vehicle api.Vehicle, estimate bool) *Estimator {
+func NewEstimator(log *util.Logger, vehicle api.Battery, capacitykWh int64, estimate bool) *Estimator {
 	s := &Estimator{
 		log:      log,
 		vehicle:  vehicle,
 		estimate: estimate,
 	}
 
-	s.Reset()
+	s.Reset(capacitykWh)
 
 	return s
 }
 
 // Reset resets the estimation process to default values
-func (s *Estimator) Reset() {
+func (s *Estimator) Reset(capacitykWh int64) {
 	s.prevSoC = 0
 	s.prevChargedEnergy = 0
-	s.capacity = float64(s.vehicle.Capacity()) * 1e3  // cache to simplify debugging
+	s.capacity = float64(capacitykWh) * 1e3           // cache to simplify debugging
 	s.virtualCapacity = s.capacity / chargeEfficiency // initial capacity taking efficiency into account
 	s.energyPerSocStep = s.virtualCapacity / 100
 }
