@@ -68,4 +68,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
-replace github.com/andig/evcc-config => github.com/premultiply/evcc-config v0.0.0-20210429112137-12e9c065efc1
+replace github.com/andig/evcc-config => github.com/premultiply/evcc-config v0.0.0-20210429133534-baa3ff04c3ee
