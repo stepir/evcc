@@ -67,3 +67,5 @@ require (
 	gopkg.in/sourcemap.v1 v1.0.5 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
+
+replace github.com/andig/evcc-config => github.com/premultiply/evcc-config v0.0.0-20210429112137-12e9c065efc1
