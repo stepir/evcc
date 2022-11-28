@@ -1,8 +1,11 @@
 [header]
+sessions = "Sessioni di carica"
 docs = "Documentazione"
 blog = "Blog"
 github = "GitHub"
 login = "Iscrizioni"
+about = "Informazioni evcc"
+
 
 [footer.version]
 availableShort = "aggiornamento"
