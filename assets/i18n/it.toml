@@ -1,8 +1,15 @@
 [header]
+sessions = "Sessioni di ricarica"
 docs = "Documentazione"
 blog = "Blog"
 github = "GitHub"
-login = "Iscrizioni"
+login = "Accesso veicoli"
+about = "A proposito di evcc"
+
+[header.theme]
+auto = "Design: sistema"
+light = "Design: chiaro"
+dark = "Design: scuro"
 
 [footer.version]
 availableShort = "aggiornamento"
@@ -17,6 +24,44 @@ modalUpdateNow = "Aggiorna ora"
 modalDownload = "Download"
 modalUpdateStatusStart = "Aggiornamento iniziato: "
 modalUpdateStatusFailed = "Aggiornamento fallito: "
+
+[footer.savings]
+tabTitle = "I miei Dati"
+footerShort = "{percent}% solare"
+footerLong = "{percent}% Energia Solare"
+modalTitle = "Overview energia ricarica"
+since = "da {since}"
+percentTitle = "Energia Solare"
+percentSelf = "{self} kWh solare"
+percentGrid = "{grid} kWh rete"
+priceTitle = "Prezzo Energia"
+priceFeedIn = "{feedInPrice} Prelievo"
+priceGrid = "{gridPrice} rete"
+savingsTitle = "Risparmi"
+savingsComparedToGrid = "confronto rete"
+savingsTotalEnergy = "{total} kWh ricaricati"
+
+[footer.community]
+tabTitle = "Comunità Live"
+power = "Potenza Ricarica"
+powerSub1 = "{activeClients} di {totalClients} partecipanti"
+powerSub2 = "sono in ricarica ora"
+greenShare = "Condivisione Solare"
+greenShareSub1 = "Potenza erogata da"
+greenShareSub2 = "FV & batterie"
+greenEnergy = "Energia Solare"
+greenEnergySub1 = "ricaricati con evcc"
+greenEnergySub2 = "da Ottobre 2022"
+
+[footer.sponsor]
+titleSponsor = "Sei ora un supporter"
+titleNoSponsor = "Supportaci"
+thanks = "Grazie per il supporto, {sponsor}! Ci aiuterà con gli sviluppi futuri."
+confetti = "Pronto per i confetti?"
+supportUs = "La nostra missione: Rendere lo standard le ricariche solari. Aiutaci supportando evcc economicamente."
+sticker = "...o con degli adesivi evcc?"
+confettiPromise = "Ci saranno adesivi e confetti digitali ;)"
+becomeSponsor = "Diventa uno sponsor"
 
 [notifications]
 modalTitle = "Notifiche"
@@ -33,6 +78,22 @@ gridImport = "Grid import"
 selfConsumption = "Self consumption"
 pvExport = "Grid export"
 
+[main]
+vehicles = "Parcheggio"
+
+[main.energyflow]
+noEnergy = "Nessun dato dal meter"
+homePower = "Consump"
+pvProduction = "Produzione"
+loadpoints = "Punto ricarica | Punto ricarica | {count} Punti ricarica"
+battery = "Batteria"
+batteryCharge = "Ricarica Batteria"
+batteryDischarge = "Scarica Batteria"
+gridImport = "Prelievo Rete"
+selfConsumption = "Auto consumo"
+pvExport = "Immissione Rete"
+
+
 [main.mode]
 off = "Stop"
 minpv = "Min+FV"
@@ -43,12 +104,123 @@ now = "Ora"
 fallbackName = "Punto di carica"
 remoteDisabledSoft = "{source}: Ricarica FV adattiva disabilitata"
 remoteDisabledHard = "{source}: Disabilitato"
+power = "Potenza"
+charged = "Caricato"
+duration = "Durata"
+remaining = "Rimanenti"
+
+[main.loadpointSettings]
+title = 'Impostazioni "{0}"'
+vehicle = "Veicolo"
+currents = "Ricarica"
+default = "default"
+disclaimerHint = "Nota:"
+disclaimerText = "I cambiamenti non sono definitivi. Saranno ripristinati al riavvio."
+
+[main.loadpointSettings.minSoC]
+label = "SoC Minimo"
+description = 'Autonomia per le emergenze. I veicoli sono ricariti "velocemente" a {0}% in modalità FV. Quindi prosegue in sola eccedenza FV.'
+
+[main.loadpointSettings.phasesConfigured]
+label = "Fasi"
+phases_0 = "adattamento automatico fasi"
+phases_1 = "1 fase"
+phases_1_hint = "({min} a {max})"
+phases_3 = "3 fasi"
+phases_3_hint = "({min} a {max})"
+
+[main.loadpointSettings.maxCurrent]
+label = "Corrente Max."
+
+[main.loadpointSettings.minCurrent]
+label = "Corrente Min."
 
 [main.vehicle]
 fallbackName = "Veicolo"
+vehicleSoC = "SoC"
+targetSoC = "Limite"
+none = "Nessun veicolo"
+unknown = "Veicolo Ospite"
+changeVehicle = "Cambio veicolo"
+detectionActive = "Riconoscimento veicolo ..."
 
 [main.vehicleSoC]
 disconnected = "disconesso"
 charging = "carica"
 ready = "pronto"
 connected = "collegato"
+vehicleTarget = "Limite veicolo: {soc}%"
+
+[main.vehicleStatus]
+minCharge = "ricarica minima a {soc}%."
+waitForVehicle = "Pronto. In attesa del veicolo."
+vehicleTargetReached = "Limite veicolo {soc}% raggiunto."
+charging = "Ricarica."
+targetChargePlanned = "Obiettivo ricarica pianificato. Partenza alle {time}."
+targetChargeWaitForVehicle = "Obiettivo di ricarica raggiunto. In attesa veicolo."
+targetChargeActive = "Obiettivo ricarica attivo."
+connected = "Collegato."
+pvDisable = "Eccedenza insufficiente. In pausa in {remaining}."
+pvEnable = "Eccdenza disponibile. Partenza  in {remaining}."
+scale1p = "Riduzione a singola fase in {remaining}."
+scale3p = "Aumento a trifase in {remaining}."
+disconnected = "Disconnesso."
+unknown = ""
+
+[main.provider]
+login = "login"
+logout = "logout"
+
+[main.targetCharge]
+title = "Obiettivo di Tempo"
+inactiveLabel = "Obiettivo di Tempo"
+activeLabel = "{time}"
+modalTitle = "Imposta obiettivo di Tempo"
+setTargetTime = "nessuno"
+description = "Quando il veicolo deve essere ricaricato a  {targetSoC}%?"
+today = "Oggi"
+tomorrow = "Domani"
+targetIsInThePast = "Il tempo scelto è retrocedente."
+remove = "Rimuovi"
+activate = "Attiva"
+experimentalLabel = "Sperimentale"
+experimentalText = "Questa funzionalità è attiva ma non ancora perfetta. Per favore segnala comportamenti anomali nel nostro"
+
+[main.targetEnergy]
+label = "Limite"
+noLimit = "nessuno"
+
+[startupError]
+title = "Errore di partenza"
+description = "Controlla il file di configurazione. Se il messaggio di errore non ti aiuta, guarda il nostro {0}."
+discussions = "Discussioni GitHub"
+hint = "Nota: Altre ragioni per cui vedi questo messaggio sono dispositivi malfunzioannti (inverter, meter, ...). Controlla la tua connessione di rete."
+configuration = "Configurazione"
+configFile = "File di configurazione usato:"
+lineError = "Abbiamo trovato un errore alla {0}."
+lineErrorLink = "linea {0}"
+fixAndRestart = "Risolvi il problema e fai ripartire il servizio."
+restartButton = "Riavvio"
+
+[sessions]
+title = "Sessioni di ricarica"
+downloadCsv = "Scarica come CSV"
+loadpoint = "Punto di ricarica"
+vehicle = "Veicolo"
+energy = "Ricaricato"
+date = "Periodo"
+
+[sessions.csv]
+loadpoint = "Punto di ricarica"
+vehicle = "Veicolo"
+odometer = "Distanza (km)"
+identifier = "Identificativo"
+chargedenergy = "Energia (kWh)"
+meterstart = "Meter Inizio (kWh)"
+meterstop = "Meter Fine (kWh)"
+created = "Creato"
+finished = "Finito"
+
+[offline]
+message = "Nessuna connessione al server."
+reload = "Ricaricare?"
